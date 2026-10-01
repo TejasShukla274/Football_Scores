@@ -1,93 +1,232 @@
+/* ============================= */
+/* PAGE */
+/* ============================= */
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0f1117;
+    background: #0d0f14;
     color: white;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
+* {
+    box-sizing: border-box;
+}
+
+
+/* Main application */
+
 .app {
-    width: 90%;
-    max-width: 1000px;
+    width: 92%;
+    max-width: 1050px;
     margin: auto;
     padding: 30px 0 60px;
 }
 
-header {
+
+/* ============================= */
+/* TOP SECTION */
+/* ============================= */
+
+.top-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
 }
 
-header h1 {
+
+.page-title {
     margin: 0;
     font-size: 30px;
+    font-weight: 700;
 }
 
-.today {
-    color: #9da3ae;
-    margin: 8px 0 0;
+
+.page-subtitle {
+    margin: 7px 0 0;
+    color: #858b96;
+    font-size: 14px;
 }
+
+
+/* ============================= */
+/* REFRESH BUTTON */
+/* ============================= */
 
 .refresh-button {
-    background: #242832;
-    color: white;
     border: none;
+    background: #24272e;
+    color: white;
     padding: 10px 18px;
     border-radius: 8px;
+    font-size: 14px;
     cursor: pointer;
 }
 
+
 .refresh-button:hover {
-    background: #343944;
+    background: #30343c;
 }
 
-section {
-    margin-top: 30px;
+
+/* ============================= */
+/* LEAGUE GROUPS */
+/* ============================= */
+
+.leagues-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.section-title {
-    margin-bottom: 12px;
-    font-size: 18px;
+
+.league-group {
+    width: 100%;
+    background: #181b21;
+    border: 1px solid #292d35;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-.live-title {
-    color: #ff4d4d;
-}
 
-.match-card {
-    background: #191c24;
-    border: 1px solid #252936;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 15px 20px;
-}
+/* ============================= */
+/* LEAGUE HEADER */
+/* ============================= */
 
-.league {
+.league-header {
+    min-height: 64px;
+
+    padding: 14px 20px;
+
     display: flex;
     align-items: center;
-    gap: 8px;
-    color: #b9bec9;
-    font-size: 13px;
-    margin-bottom: 15px;
+    justify-content: space-between;
+
+    background: #202329;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: background 0.2s ease;
 }
 
+
+.league-header:hover {
+    background: #282c33;
+}
+
+
+/* League logo + information */
+
+.league-details {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+
+/* League logo */
+
 .league-logo {
-    width: 22px;
-    height: 22px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
 }
 
-.country {
-    color: #777d89;
+
+/* League name */
+
+.league-details h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
 }
 
-.match-content {
-    display: grid;
-    grid-template-columns: 1fr 120px 1fr;
-    align-items: center;
-    gap: 15px;
+
+/* Country */
+
+.league-details p {
+    margin: 4px 0 0;
+    color: #858b96;
+    font-size: 13px;
 }
+
+
+/* ============================= */
+/* COLLAPSE / EXPAND ARROW */
+/* ============================= */
+
+.collapse-arrow {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #aeb4be;
+
+    font-size: 22px;
+
+    border-radius: 50%;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.collapse-arrow:hover {
+    background: #30343b;
+}
+
+
+.collapse-arrow.expanded {
+    transform: rotate(0deg);
+}
+
+
+/* ============================= */
+/* MATCHES CONTAINER */
+/* ============================= */
+
+.matches-container {
+    background: #171a20;
+}
+
+
+/* ============================= */
+/* MATCH CARD */
+/* ============================= */
+
+.match-card {
+    min-height: 95px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 120px 1fr;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 16px 25px;
+
+    border-top: 1px solid #292d35;
+
+    transition: background 0.2s ease;
+}
+
+
+.match-card:hover {
+    background: #1d2026;
+}
+
+
+/* ============================= */
+/* TEAMS */
+/* ============================= */
 
 .team {
     display: flex;
@@ -96,10 +235,19 @@ section {
     font-size: 16px;
 }
 
-.team:last-child {
+
+.home-team {
+    justify-content: flex-start;
+}
+
+
+.away-team {
     justify-content: flex-end;
     text-align: right;
 }
+
+
+/* Team logo */
 
 .team-logo {
     width: 40px;
@@ -107,76 +255,118 @@ section {
     object-fit: contain;
 }
 
-.score {
+
+/* ============================= */
+/* SCORE */
+/* ============================= */
+
+.match-score {
     text-align: center;
 }
+
 
 .score-number {
-    font-size: 23px;
-    font-weight: bold;
+    font-size: 22px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-.status {
+
+.match-status {
     margin-top: 6px;
-    color: #9da3ae;
     font-size: 13px;
+    color: #858b96;
 }
 
-.status.live {
-    color: #ff4d4d;
-    font-weight: bold;
+
+/* Live match */
+
+.match-status.live {
+    color: #36d78a;
+    font-weight: 600;
 }
+
+
+/* ============================= */
+/* LOADING */
+/* ============================= */
 
 .loading {
-    text-align: center;
-    color: #9da3ae;
     margin-top: 100px;
+    text-align: center;
+    color: #858b96;
 }
+
+
+/* ============================= */
+/* ERROR */
+/* ============================= */
 
 .error {
-    text-align: center;
-    color: #ff4d4d;
     margin-top: 100px;
+    text-align: center;
+    color: #ff5555;
 }
+
+
+/* ============================= */
+/* NO MATCHES */
+/* ============================= */
 
 .no-matches {
+    padding: 80px 0;
     text-align: center;
-    color: #9da3ae;
-    margin-top: 100px;
+    color: #858b96;
 }
 
-@media (max-width: 650px) {
+
+/* ============================= */
+/* MOBILE */
+/* ============================= */
+
+@media (max-width: 700px) {
 
     .app {
-        width: 94%;
+        width: 95%;
     }
 
-    header h1 {
-        font-size: 22px;
+
+    .top-section {
+        align-items: flex-start;
     }
 
-    .match-content {
-        grid-template-columns: 1fr 80px 1fr;
-        gap: 5px;
+
+    .page-title {
+        font-size: 23px;
     }
+
+
+    .league-header {
+        padding: 13px 15px;
+    }
+
+
+    .match-card {
+        grid-template-columns: 1fr 75px 1fr;
+        gap: 8px;
+        padding: 15px 12px;
+    }
+
 
     .team {
-        flex-direction: column;
-        text-align: center;
         font-size: 13px;
+        gap: 7px;
     }
 
-    .team:last-child {
-        flex-direction: column;
-        text-align: center;
-    }
 
     .team-logo {
-        width: 35px;
-        height: 35px;
+        width: 32px;
+        height: 32px;
     }
 
+
     .score-number {
-        font-size: 19px;
+        font-size: 18px;
     }
+
 }
