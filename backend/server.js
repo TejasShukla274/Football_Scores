@@ -15,16 +15,15 @@ app.get("/api/matches", async (req, res) => {
 
     try {
 
-        // Get today's date in YYYY-MM-DD format
-        const today = new Date().toISOString().split("T")[0];
+        // Get requested date or default to today's date in YYYY-MM-DD format
+        const targetDate = req.query.date || new Date().toISOString().split("T")[0];
 
-
-        // Request today's matches from API-Football
+        // Request matches from API-Football for the specified date
         const response = await axios.get(
             "https://v3.football.api-sports.io/fixtures",
             {
                 params: {
-                    date: today
+                    date: targetDate
                 },
 
                 headers: {
