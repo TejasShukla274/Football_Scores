@@ -1,0 +1,28 @@
+# One-command local start:  docker compose up --build
+# Frontend -> http://localhost:8080
+# Backend  -> http://localhost:5001
+services:
+  backend:
+    build: ./backend
+    image: football-scores-backend
+    ports:
+      - "5001:5000"
+    # Container listens on 5000 internally; the host port is 5001
+    environment:
+      - PORT=5000
+    # Secret lives in backend/.env (gitignored), injected at runtime - never baked into the image
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend-new
+      args:
+        VITE_API_BASE: ${VITE_API_BASE:-http://localhost:5001}
+    image: football-scores-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

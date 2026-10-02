@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { fetchMatches as fetchMatchesApi } from "./api.js";
 import "./App.css";
 
 function App() {
@@ -16,19 +17,15 @@ function App() {
     // Stores expanded/collapsed state of each league { [leagueName]: boolean }
     const [expandedLeagues, setExpandedLeagues] = useState({});
 
-    // Fetch matches whenever selectedDate changes
-    useEffect(() => {
-        fetchMatches(selectedDate);
-    }, [selectedDate]);
-
-    // Fetch matches from the backend endpoint with optional date parameter
-    const fetchMatches = async (dateParam = selectedDate) => {
+    // Fetch matches from the backend endpoint with optional date parameter.
+    // URL comes from api.js (VITE_API_BASE, default http://localhost:5001)
+    // so Docker builds and deploys can point elsewhere.
+    const fetchMatches = useCallback(async (dateParam = selectedDate) => {
         try {
             setLoading(true);
             setError("");
 
-            const response = await fetch(`http://localhost:5000/api/matches?date=${dateParam}`);
-            const data = await response.json();
+            const data = await fetchMatchesApi(dateParam);
 
             if (data.error) {
                 setError("Unable to load matches");
@@ -42,7 +39,16 @@ function App() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedDate]);
+
+    // Fetch matches whenever selectedDate changes.
+    // The async IIFE keeps the fetch off the effect's synchronous path
+    // (react-hooks/set-state-in-effect).
+    useEffect(() => {
+        (async () => {
+            await fetchMatches(selectedDate);
+        })();
+    }, [fetchMatches, selectedDate]);
 
     // Check whether a match is currently live
     const isLive = (status) => {
