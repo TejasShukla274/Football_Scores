@@ -9,32 +9,57 @@ const app = express();
 
 app.use(cors());
 
+// API-Football v3 compatible host: same endpoints, parameters and JSON
+// envelope as api-sports.io, served by 5DollarFootballAPI with our key.
+const API_BASE = "https://api-football.5dollarfootballapi.com";
 
-// Get today's football matches
+
+// Get matches for a requested date and serve them to the React app
 app.get("/api/matches", async (req, res) => {
 
     try {
 
-        // Get requested date or default to today's date in YYYY-MM-DD format
+        // Requested date or default to today's date in YYYY-MM-DD format
         const targetDate = req.query.date || new Date().toISOString().split("T")[0];
 
-        // Request matches from API-Football for the specified date
         const response = await axios.get(
-            "https://v3.football.api-sports.io/fixtures",
+            `${API_BASE}/fixtures`,
             {
-                params: {
-                    date: targetDate
-                },
-
+                params: { date: targetDate },
                 headers: {
                     "x-apisports-key": process.env.API_KEY
                 }
             }
         );
 
+        const body = response.data;
 
-        // Send the football data to React
-        res.json(response.data);
+        // The provider reports key, parameter and plan problems as HTTP 200
+        // with the message under `errors` (API-Football convention)
+        const upstreamErrors = body.errors;
+        const hasErrors = Array.isArray(upstreamErrors)
+            ? upstreamErrors.length > 0
+            : Boolean(upstreamErrors && Object.keys(upstreamErrors).length);
+
+        if (hasErrors) {
+            console.log("UPSTREAM ERRORS:", JSON.stringify(upstreamErrors));
+
+            return res.status(502).json({
+                error: "Upstream rejected the request",
+                status: 200,
+                details: upstreamErrors
+            });
+        }
+
+        // Forward quota headers so the remaining window stays visible
+        for (const header of ["x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset"]) {
+            if (response.headers[header]) {
+                res.set(header, response.headers[header]);
+            }
+        }
+
+        // Full API-Football envelope: { get, errors, results, paging, response }
+        res.json(body);
 
     } catch (error) {
 
@@ -48,10 +73,9 @@ app.get("/api/matches", async (req, res) => {
 
             console.log(
                 "API RESPONSE:",
-                error.response.data
+                JSON.stringify(error.response.data)
             );
         }
-
 
         // Send error information to the browser
         res.status(500).json({
@@ -69,11 +93,13 @@ app.get("/api/matches", async (req, res) => {
 });
 
 
-// Start the server
-app.listen(5000, () => {
+// Start the server (PORT set by hosting platforms, defaults to 5001)
+const PORT = process.env.PORT || 5001;
+
+app.listen(PORT, () => {
 
     console.log(
-        "Backend running at http://localhost:5000"
+        `Backend running at http://localhost:${PORT}`
     );
 
 });
